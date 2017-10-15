@@ -1,11 +1,13 @@
 import React from 'react';
 import {FlatList, StyleSheet, Image, Text, View, RefreshControl} from 'react-native';
+import JobHandler from './jobhandler';
 
 class JobListCell extends React.Component {
   render() {
+
     return (
-      <View>
-        <Text>Hello there {this.props.job}</Text>
+      <View key={this.props.job}>
+        <Text>{this.props.job}</Text>
       </View>
     )
   }
@@ -14,25 +16,42 @@ class JobListCell extends React.Component {
 export default class JobListView extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {refreshing: false}
+    this.state = {
+      refreshing: false,
+      jobs: []
+    }
+  }
+
+  _keyExtractor = (item, index) => {
+    index
   }
 
   _onRefresh() {
     this.setState({refreshing: true})
-    fetchData().then(() => {
-      this.setState({refreshing: false})
+    JobHandler.refresh().then((jobs) => {
+      var jobs = JSON.parse(jobs['_bodyText'])['submitted'];
+
+      this.setState({refreshing: false, jobs: jobs})
     })
+  }
+
+  _renderItem(job) {
+    return (
+      <JobListCell key={job.item} job={job.item} />
+    )
   }
 
   render() {
     return (
       <FlatList style={styles.list}
-        data={['hello', 'hello2']}
+        data={this.state['jobs']}
+        keyExtractor={this._keyExtractor}
         refreshControl={<RefreshControl
           refreshing={this.state.refreshing}
           onRefresh={this._onRefresh.bind(this)}
+          title="Refresh for Jobs"
           />}
-        renderItem={({item}) => <JobListCell key={item} job={item} /> }/>
+        renderItem={this._renderItem}/>
     )
   }
 }

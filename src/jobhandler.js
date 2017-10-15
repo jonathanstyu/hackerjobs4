@@ -1,15 +1,9 @@
 
 // This class is for retrieving jobs
-export default class JobHandler {
-  constructor(properties) {
-    this.url = 'https://hacker-news.firebaseio.com/v0/user/whoishiring.json';
-    this.jobs = [];
-  }
-}
+export default class JobHandler { }
 
-JobHandler.prototype.refresh = async function(input) {
-  var jobs = await fetch(this.url);
-  return jobs;
+JobHandler.refresh = function() {
+  return fetch('https://hacker-news.firebaseio.com/v0/user/whoishiring.json');
 }
 
 JobHandler.buildJobUrl = function (itemID) {
