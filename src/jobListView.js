@@ -1,50 +1,61 @@
 import React from 'react';
-import {FlatList, StyleSheet, Image, Text, View, RefreshControl} from 'react-native';
+import {FlatList, StyleSheet, Image, Text, View, RefreshControl, AsyncStorage} from 'react-native';
 import JobHandler from './jobhandler';
-
-class JobListCell extends React.Component {
-  render() {
-
-    return (
-      <View key={this.props.job}>
-        <Text>{this.props.job}</Text>
-      </View>
-    )
-  }
-}
 
 export default class JobListView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       refreshing: false,
-      jobs: []
+      shownthreads: 10,
+      allthreads: []
+    }
+    this.componentDidMount = this.componentDidMount.bind(this);
+  }
+
+  componentDidMount = async () => {
+    var that = this;
+    try {
+      var jobthreads = await AsyncStorage.getItem('@jobthreads')
+      if (jobthreads !== null) {
+        var deserializedJobthreads = JSON.parse(jobthreads);
+        that.setState({allthreads: deserializedJobthreads})
+      }
+    } catch (e) {
+      console.log(e);
     }
   }
 
   _keyExtractor = (item, index) => {
-    index
+    return index
   }
 
-  _onRefresh() {
+  _onRefresh = async () => {
     this.setState({refreshing: true})
-    JobHandler.refresh().then((jobs) => {
-      var jobs = JSON.parse(jobs['_bodyText'])['submitted'];
-
-      this.setState({refreshing: false, jobs: jobs})
-    })
+    var response = await JobHandler.refresh();
+    try {
+      var jobsStringify = JSON.stringify(response)
+      await AsyncStorage.setItem("@jobthreads", jobsStringify)
+      this.setState({refreshing: false, allthreads: response})
+    } catch (e) {
+      console.log("Error saving");
+    }
   }
 
-  _renderItem(job) {
+  _renderItem(props) {
+    var job = props['item'];
     return (
-      <JobListCell key={job.item} job={job.item} />
+      <View key={job} style={styles.cellContainer}>
+        <Text>{job}</Text>
+      </View>
     )
   }
 
   render() {
+    var endIndex = this.state['shownthreads'];
     return (
       <FlatList style={styles.list}
-        data={this.state['jobs']}
+        data={this.state['allthreads'].slice(0, endIndex)}
         keyExtractor={this._keyExtractor}
         refreshControl={<RefreshControl
           refreshing={this.state.refreshing}
@@ -60,4 +71,7 @@ const styles = StyleSheet.create({
   list: {
     backgroundColor: '#fff'
   },
+  cellContainer: {
+    padding: 10
+  }
 });

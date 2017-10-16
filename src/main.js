@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, NavigatorIOS } from 'react-native';
+import { StyleSheet, Text, View, NavigatorIOS, AsyncStorage } from 'react-native';
 
 import JobHandler from './jobhandler';
 
