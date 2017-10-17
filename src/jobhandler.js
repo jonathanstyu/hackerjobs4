@@ -1,15 +1,19 @@
 
+// import WhoThread from './whoThread';
 // This class is for retrieving jobs
 export default class JobHandler { }
 
-JobHandler.refresh = () => {
+JobHandler.refresh = (hiring=true) => {
+  var url = hiring ? 'https://hacker-news.firebaseio.com/v0/user/whoishiring.json' : 'https://hacker-news.firebaseio.com/v0/askstories.json';
+    
   return new Promise(async (resolve, reject) => {
-    var response = await fetch('https://hacker-news.firebaseio.com/v0/user/whoishiring.json');
+    var promises = [];
+    var response = await fetch(url);
     var jobs = JSON.parse(response['_bodyText'])['submitted'];
-    resolve(jobs)
+    var promises = jobs.slice(0, 15).map((jobID) => {
+      return fetch("https://hacker-news.firebaseio.com/v0/item/" + jobID + ".json")
+        .then((response) => JSON.parse(response['_bodyText']))
+    });
+    Promise.all(promises).then((result) => resolve(result))
   })
-}
-
-JobHandler.buildJobUrl = function (itemID) {
-  return fetch("https://hacker-news.firebaseio.com/v0/item/" + itemID + ".json");
 }
