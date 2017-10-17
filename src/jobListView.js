@@ -1,6 +1,9 @@
 import React from 'react';
-import {FlatList, StyleSheet, Image, Text, View, RefreshControl, AsyncStorage} from 'react-native';
+import {FlatList, StyleSheet, Image,
+  Text, View, RefreshControl,
+  AsyncStorage, TouchableHighlight} from 'react-native';
 import JobHandler from './jobhandler';
+import ThreadView from './threadView';
 
 // For accessing data
 // import WhoThread from './whoThread';
@@ -44,12 +47,23 @@ export default class JobListView extends React.Component {
     }
   }
 
-  _renderItem(props) {
+  _onPressItem = (thread) => {
+    this.props.navigator.push({
+      title: "Thread: " + thread.title,
+      passProps: {thread: thread},
+      component: ThreadView
+    })
+  }
+
+  _renderItem = (props) => {
     var job = props['item'];
     return (
-      <View key={job.id} style={styles.cellContainer}>
+      <TouchableHighlight key={job.id}
+        onPress={() => this._onPressItem(job)}
+        style={styles.cellContainer}
+        >
         <Text>{job.title}</Text>
-      </View>
+      </TouchableHighlight>
     )
   }
 
