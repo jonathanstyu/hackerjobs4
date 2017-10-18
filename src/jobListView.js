@@ -1,7 +1,8 @@
 import React from 'react';
 import {FlatList, StyleSheet, Image,
   Text, View, RefreshControl,
-  AsyncStorage, TouchableHighlight} from 'react-native';
+  AsyncStorage, TouchableHighlight,
+  ActivityIndicator } from 'react-native';
 import JobHandler from './jobhandler';
 import ThreadView from './threadView';
 
@@ -89,5 +90,14 @@ const styles = StyleSheet.create({
   },
   cellContainer: {
     padding: 10
+  },
+  mainContainer: {
+    marginTop: 64,
+    flex: 1
+  },
+  spinnerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: "center"
   }
 });

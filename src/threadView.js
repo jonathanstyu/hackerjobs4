@@ -1,12 +1,12 @@
 import React from 'react';
-import {FlatList, StyleSheet, Image, Text, View, RefreshControl, AsyncStorage, NavigatorIOS} from 'react-native';
+import {FlatList, StyleSheet, Image, Text, View, ActivityIndicator, AsyncStorage, NavigatorIOS} from 'react-native';
 import JobHandler from './jobhandler';
 
 export default class ThreadView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      refreshing: false,
+      refreshing: true,
       jobstories: [],
       kidsIDs: props.thread.kids,
       paging: 1
@@ -17,11 +17,11 @@ export default class ThreadView extends React.Component {
   componentDidMount = async () => {
     var that = this;
     try {
-      // var jobthreads = await AsyncStorage.getItem('@jobthreads')
-      // if (jobthreads !== null) {
-      //   var deserializedJobthreads = JSON.parse(jobthreads);
-      //   that.setState({allthreads: deserializedJobthreads})
-      // }
+      var endIndex = this.state['paging'] * 30 < this.state.kidsIDs.length ? this.state['paging'] * 30: this.state.kidsIDs.length;
+      var startIndex = (this.state['paging'] - 1) * 30;
+      var slicedIDs = this.state['kidsIDs'].slice(startIndex, endIndex);
+      var jobthreads = await JobHandler.batchGet(slicedIDs);
+      that.setState({jobstories: jobthreads, refreshing: false})
     } catch (e) {
       console.log(e);
     }
@@ -39,24 +39,25 @@ export default class ThreadView extends React.Component {
   }
 
   _renderItem = (props) => {
-    var kid = props['item'];
-    console.log(props);
+    var jobstory = props['item'];
     return (
-      <View key={kid}
+      <View key={jobstory}
         style={styles.cellContainer}
-        onPressItem={this._onPressItem(kid)}
+        onPressItem={this._onPressItem()}
         >
-        <Text>{kid}</Text>
+        <Text>{jobstory.text}</Text>
       </View>
     )
   }
 
-  render() {
+  render = () => {
+    var renderingScreen = (<View style={styles.spinnerContainer}><ActivityIndicator size={'large'} /></View>)
+    var list = (<FlatList style={styles.list} data={this.state.jobstories} keyExtractor={this._keyExtractor} renderItem={this._renderItem}/>)
+    // Because of the return statement, the block {} is treated like an object literal
     return (
-      <FlatList style={styles.list}
-        data={this.state.kidsIDs}
-        keyExtractor={this._keyExtractor}
-        renderItem={this._renderItem}/>
+      <View style={styles.mainContainer}>
+        { this.state['refreshing'] ? renderingScreen : list }
+      </View>
     )
   }
 }
@@ -67,5 +68,14 @@ const styles = StyleSheet.create({
   },
   cellContainer: {
     padding: 10
+  },
+  mainContainer: {
+    marginTop: 64,
+    flex: 1
+  },
+  spinnerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: "center"
   }
 });

@@ -10,7 +10,7 @@ JobHandler.refresh = (hiring=true) => {
     var promises = [];
     var response = await fetch(url);
     var jobs = JSON.parse(response['_bodyText'])['submitted'];
-    var promises = jobs.slice(0, 15).map((jobID) => {
+    var promises = jobs.slice(0, 18).map((jobID) => {
       return fetch("https://hacker-news.firebaseio.com/v0/item/" + jobID + ".json")
         .then((response) => JSON.parse(response['_bodyText']))
     });
