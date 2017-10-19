@@ -11,7 +11,9 @@ export default class MainApp extends React.Component {
       <NavigatorIOS
         initialRoute={{
           component: JobListView,
-          title: "HackerJobs2"
+          title: "HackerJobs2",
+          rightButtonTitle: "Settings",
+          leftButtonTitle: "Saved",
         }}
         style={{flex: 1}}
       />

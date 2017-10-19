@@ -1,6 +1,7 @@
 import React from 'react';
 import {FlatList, StyleSheet, Image, Text, View, ActivityIndicator, AsyncStorage, NavigatorIOS} from 'react-native';
 import JobHandler from './jobhandler';
+import HTMLView from 'react-native-htmlview';
 
 export default class ThreadView extends React.Component {
   constructor(props) {
@@ -45,14 +46,29 @@ export default class ThreadView extends React.Component {
         style={styles.cellContainer}
         onPressItem={this._onPressItem()}
         >
-        <Text>{jobstory.text}</Text>
+        <HTMLView value={jobstory.text}/>
       </View>
     )
   }
 
+  _renderSeparator = () => {
+    return (
+      <View
+        style={{
+          height: 1,
+          backgroundColor: "#CED0CE",
+        }}
+      />
+    );
+  }
+
   render = () => {
     var renderingScreen = (<View style={styles.spinnerContainer}><ActivityIndicator size={'large'} /></View>)
-    var list = (<FlatList style={styles.list} data={this.state.jobstories} keyExtractor={this._keyExtractor} renderItem={this._renderItem}/>)
+    var list = (<FlatList style={styles.list}
+        data={this.state.jobstories}
+        keyExtractor={this._keyExtractor}
+        ItemSeparatorComponent={this._renderSeparator}
+        renderItem={this._renderItem}/>)
     // Because of the return statement, the block {} is treated like an object literal
     return (
       <View style={styles.mainContainer}>

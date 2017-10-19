@@ -1,10 +1,11 @@
 import React from 'react';
-import {FlatList, StyleSheet, Image,
+import {SectionList, FlatList, StyleSheet, Image,
   Text, View, RefreshControl,
   AsyncStorage, TouchableHighlight,
   ActivityIndicator } from 'react-native';
 import JobHandler from './jobhandler';
 import ThreadView from './threadView';
+import Moment from 'moment';
 
 // For accessing data
 // import WhoThread from './whoThread';
@@ -42,6 +43,7 @@ export default class JobListView extends React.Component {
       var response = await JobHandler.refresh();
       var jobsStringify = JSON.stringify(response)
       await AsyncStorage.setItem("@jobthreads", jobsStringify)
+      console.log();
       this.setState({refreshing: false, allthreads: response})
     } catch (e) {
       console.log("Error saving: " + e);
@@ -63,9 +65,30 @@ export default class JobListView extends React.Component {
         onPress={() => this._onPressItem(job)}
         style={styles.cellContainer}
         >
-        <Text>{job.title}</Text>
+        <View>
+          <Text>{job.parsed_title}</Text>
+          <Text>{Moment.unix(job.time).format('MMM - YYYY')}</Text>
+          <Text>{job.kids.length} listings</Text>
+        </View>
       </TouchableHighlight>
     )
+  }
+
+  _renderSectionHeader = ({section}) => {
+    return (
+      <Text>{section.title}</Text>
+    )
+  }
+
+  _renderSeparator = () => {
+    return (
+      <View
+        style={{
+          height: 1,
+          backgroundColor: "#CED0CE",
+        }}
+      />
+    );
   }
 
   render() {
@@ -74,6 +97,7 @@ export default class JobListView extends React.Component {
       <FlatList style={styles.list}
         data={this.state.allthreads}
         keyExtractor={this._keyExtractor}
+        ItemSeparatorComponent={this._renderSeparator}
         refreshControl={<RefreshControl
           refreshing={this.state.refreshing}
           onRefresh={this._onRefresh.bind(this)}

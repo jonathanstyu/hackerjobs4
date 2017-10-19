@@ -1,4 +1,4 @@
-
+import _ from 'lodash'
 // import WhoThread from './whoThread';
 // This class is for retrieving jobs
 export default class JobHandler { }
@@ -12,10 +12,24 @@ JobHandler.refresh = (hiring=true) => {
     var jobs = JSON.parse(response['_bodyText'])['submitted'];
     var promises = jobs.slice(0, 18).map((jobID) => {
       return fetch("https://hacker-news.firebaseio.com/v0/item/" + jobID + ".json")
-        .then((response) => JSON.parse(response['_bodyText']))
+        .then((response) => {
+          var parsed = JSON.parse(response['_bodyText'])
+
+          // Big ugly hack so that I can strip off the dates and the "Ask HN: " at the start
+          parsed['parsed_title'] = parsed['title'].split(':')[1].split('(')[0].trim();
+          return parsed;
+        })
     });
-    Promise.all(promises).then((result) => resolve(result))
+    Promise.all(promises).then((result) => {
+      resolve(result)
+    })
   })
+}
+
+JobHandler.parseIntoSections = (raw=[]) => {
+  return new Promise((resolve, reject) => {
+    var sections = []
+  });
 }
 
 JobHandler.batchGet = (batchIDs=[]) => {
