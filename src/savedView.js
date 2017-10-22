@@ -3,14 +3,11 @@ import {FlatList, StyleSheet, Image, Text, View, ActivityIndicator, AsyncStorage
 import JobHandler from './jobhandler';
 import HTMLView from 'react-native-htmlview';
 
-export default class ThreadView extends React.Component {
+export default class SavedView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      refreshing: true,
-      jobstories: [],
-      kidsIDs: props.thread.kids,
-      paging: 1
+      jobstories: []
     }
     this.componentDidMount = this.componentDidMount.bind(this);
   }
@@ -18,11 +15,11 @@ export default class ThreadView extends React.Component {
   componentDidMount = async () => {
     var that = this;
     try {
-      var endIndex = this.state['paging'] * 30 < this.state.kidsIDs.length ? this.state['paging'] * 30: this.state.kidsIDs.length;
-      var startIndex = (this.state['paging'] - 1) * 30;
-      var slicedIDs = this.state['kidsIDs'].slice(startIndex, endIndex);
-      var jobthreads = await JobHandler.batchGet(slicedIDs);
-      that.setState({jobstories: jobthreads, refreshing: false})
+      var jobthreads = await AsyncStorage.getItem('@savedJobs')
+      if (jobthreads !== null) {
+        var deserializedJobthreads = JSON.parse(jobthreads);
+        that.setState({allthreads: deserializedJobthreads})
+      }
     } catch (e) {
       console.log(e);
     }
@@ -62,16 +59,21 @@ export default class ThreadView extends React.Component {
   }
 
   render = () => {
-    var renderingScreen = (<View style={styles.spinnerContainer}><ActivityIndicator size={'large'} /></View>)
-    var list = (<FlatList style={styles.list}
+    var savedList = (<FlatList style={styles.list}
         data={this.state.jobstories}
         keyExtractor={this._keyExtractor}
         ItemSeparatorComponent={this._renderSeparator}
         renderItem={this._renderItem}/>)
-    // Because of the return statement, the block {} is treated like an object literal
+    var empty = (
+      <View style={styles.emptyTextContainer}>
+        <Text style={styles.emptyText}>
+          You do not have any stories saved.
+        </Text>
+      </View>
+    )
     return (
       <View style={styles.mainContainer}>
-        { this.state['refreshing'] ? renderingScreen : list }
+        { this.state.jobstories.length == 0 ? empty : savedList}
       </View>
     )
   }
@@ -85,12 +87,17 @@ const styles = StyleSheet.create({
     padding: 10
   },
   mainContainer: {
-    marginTop: 64,
-    flex: 1
+    flex: 1,
+    flexDirection: 'column',
   },
-  spinnerContainer: {
+  emptyTextContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: "center"
+  },
+  emptyText: {
+    fontSize: 18,
+    textAlign: 'center',
+    fontWeight: 'bold'
   }
 });

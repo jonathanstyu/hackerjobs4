@@ -5,7 +5,9 @@ import {SectionList, FlatList, StyleSheet, Image,
   ActivityIndicator } from 'react-native';
 import JobHandler from './jobhandler';
 import ThreadView from './threadView';
+import SavedView from './savedView';
 import Moment from 'moment';
+import _ from 'lodash';
 
 // For accessing data
 // import WhoThread from './whoThread';
@@ -15,7 +17,8 @@ export default class JobListView extends React.Component {
     super(props);
     this.state = {
       refreshing: false,
-      allthreads: []
+      allthreads: [],
+      modal: false
     }
     this.componentDidMount = this.componentDidMount.bind(this);
   }
@@ -43,7 +46,6 @@ export default class JobListView extends React.Component {
       var response = await JobHandler.refresh();
       var jobsStringify = JSON.stringify(response)
       await AsyncStorage.setItem("@jobthreads", jobsStringify)
-      console.log();
       this.setState({refreshing: false, allthreads: response})
     } catch (e) {
       console.log("Error saving: " + e);
@@ -65,18 +67,17 @@ export default class JobListView extends React.Component {
         onPress={() => this._onPressItem(job)}
         style={styles.cellContainer}
         >
-        <View>
-          <Text>{job.parsed_title}</Text>
-          <Text>{Moment.unix(job.time).format('MMM - YYYY')}</Text>
-          <Text>{job.kids.length} listings</Text>
+        <View style={cellStyle.secondary}>
+          <Text style={cellStyle.title}>{Moment.unix(job.time).format('MM/YYYY')}</Text>
+          <Text>{job.kids.length} posts</Text>
         </View>
       </TouchableHighlight>
     )
   }
 
-  _renderSectionHeader = ({section}) => {
+  _renderSectionHeader = (section) => {
     return (
-      <Text>{section.title}</Text>
+      <Text style={cellStyle.titleCell}>{section.title}</Text>
     )
   }
 
@@ -93,10 +94,16 @@ export default class JobListView extends React.Component {
 
   render() {
     var endIndex = this.state['shownthreads'];
+    var organized = _.groupBy(this.state.allthreads, 'parsed_title');
     return (
-      <FlatList style={styles.list}
-        data={this.state.allthreads}
+      <SectionList style={styles.list}
+        sections={[
+          {data: organized["Who is hiring?"] || [], title: "Who is hiring?"},
+          {data: organized["Who wants to be hired?"] || [], title: "Who wants to be hired"},
+          {data: organized["Freelancer? Seeking freelancer?"] || [], title: "Freelancer? Seeking freelancer?"},
+        ]}
         keyExtractor={this._keyExtractor}
+        renderSectionHeader={({section}) => this._renderSectionHeader(section)}
         ItemSeparatorComponent={this._renderSeparator}
         refreshControl={<RefreshControl
           refreshing={this.state.refreshing}
@@ -116,7 +123,7 @@ const styles = StyleSheet.create({
     padding: 10
   },
   mainContainer: {
-    marginTop: 64,
+    paddingTop: 64,
     flex: 1
   },
   spinnerContainer: {
@@ -125,3 +132,20 @@ const styles = StyleSheet.create({
     alignItems: "center"
   }
 });
+
+const cellStyle = StyleSheet.create({
+  titleCell: {
+    fontWeight: "bold",
+    fontSize: 18,
+    'padding': 10
+  },
+  secondary: {
+    flexDirection: "row",
+    justifyContent: 'space-between',
+    paddingLeft: 10,
+    paddingRight: 10
+  },
+  count: {
+
+  }
+})
