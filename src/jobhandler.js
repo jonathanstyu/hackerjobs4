@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import {AsyncStorage} from 'react-native'; 
 // import WhoThread from './whoThread';
 // This class is for retrieving jobs
 export default class JobHandler { }
@@ -40,4 +41,18 @@ JobHandler.batchGet = (batchIDs=[]) => {
     });
     Promise.all(promises).then((result) => resolve(result))
   })
+}
+
+JobHandler.saveJob = (job) => {
+  return new Promise(async (resolve, reject) => {
+    var jobthreads = await AsyncStorage.getItem('@savedJobs')
+    if (jobthreads !== null) {
+      var deserializedSavedThreads = JSON.parse(jobthreads);
+      var savedThreadsStringified = JSON.stringify(deserializedSavedThreads.push(job));
+      resolve(await AsyncStorage.setItem("@savedJobs", savedThreadsStringified))
+    } else {
+      var toSave = JSON.stringify([job])
+      resolve(await AsyncStorage.setItem("@savedJobs", toSave));
+    }
+  });
 }

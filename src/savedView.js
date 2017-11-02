@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlatList, StyleSheet, Image, Text, View, ActivityIndicator, AsyncStorage, NavigatorIOS} from 'react-native';
+import {FlatList, Button, StyleSheet, Image, Text, View, ActivityIndicator, AsyncStorage, NavigatorIOS} from 'react-native';
 import JobHandler from './jobhandler';
 import HTMLView from 'react-native-htmlview';
 
@@ -40,10 +40,15 @@ export default class SavedView extends React.Component {
     var jobstory = props['item'];
     return (
       <View key={jobstory}
-        style={styles.cellContainer}
-        >
-        <HTMLView value={jobstory.text}/>
+      style={styles.cellContainer}
+      >
+      <HTMLView value={jobstory.text}/>
+      <View style={styles.cellStrip}>
+        <Text>Job Stories {props['index']}</Text>
+        <Button title="Delete" color='red' onPress={() => this._delete(jobstory)} />
+        <Button title="Share" onPress={() => this._share(jobstory)} />
       </View>
+    </View>
     )
   }
 
@@ -85,6 +90,16 @@ const styles = StyleSheet.create({
   },
   cellContainer: {
     padding: 10
+  },
+  cellStrip: {
+    flexDirection: "row",
+    backgroundColor: 'gainsboro',
+    justifyContent: "space-between",
+    alignItems: 'center',
+    marginTop: 10,
+    marginBottom: 10,
+    paddingRight: 5,
+    paddingLeft: 5
   },
   mainContainer: {
     flex: 1,

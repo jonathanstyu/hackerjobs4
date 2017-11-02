@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlatList, StyleSheet, Image, Text, View, ActivityIndicator, AsyncStorage, NavigatorIOS} from 'react-native';
+import {FlatList, StyleSheet, Button, Image, Text, View, ActivityIndicator, AsyncStorage, NavigatorIOS} from 'react-native';
 import JobHandler from './jobhandler';
 import HTMLView from 'react-native-htmlview';
 
@@ -39,26 +39,30 @@ export default class ThreadView extends React.Component {
     // })
   }
 
+  _save = (jobstory) => {
+    JobHandler.saveJob(jobstory)
+  }
+
+  _share = (jobstory) => {
+    // JobHandler.saveStory(jobstory)
+  }
+
   _renderItem = (props) => {
     var jobstory = props['item'];
     return (
       <View key={jobstory}
         style={styles.cellContainer}
         >
-        <HTMLView value={jobstory.text}/>
+        <HTMLView style={{
+          padding: 10
+        }} value={jobstory.text}/>
+        <View style={styles.cellStrip}>
+          <Text>Job Stories {props['index']}</Text>
+          <Button title="Save" onPress={() => this._save(jobstory)} />
+          <Button title="Share" onPress={() => this._share(jobstory)} />
+        </View>
       </View>
     )
-  }
-
-  _renderSeparator = () => {
-    return (
-      <View
-        style={{
-          height: 1,
-          backgroundColor: "#CED0CE",
-        }}
-      />
-    );
   }
 
   render = () => {
@@ -66,7 +70,6 @@ export default class ThreadView extends React.Component {
     var list = (<FlatList style={styles.list}
         data={this.state.jobstories}
         keyExtractor={this._keyExtractor}
-        ItemSeparatorComponent={this._renderSeparator}
         renderItem={this._renderItem}/>)
     // Because of the return statement, the block {} is treated like an object literal
     return (
@@ -82,7 +85,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   cellContainer: {
-    padding: 10
+    paddingTop: 10,
+  },
+  cellStrip: {
+    flexDirection: "row",
+    backgroundColor: 'gainsboro',
+    justifyContent: "space-between",
+    alignItems: 'center',
+    marginTop: 10,
+    marginBottom: 10,
+    paddingRight: 5,
+    paddingLeft: 5
   },
   mainContainer: {
     marginTop: 64,

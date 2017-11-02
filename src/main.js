@@ -20,7 +20,7 @@ export default class MainApp extends React.Component {
     return (
       <TabBarIOS tintColor="blue">
         <TabBarIOS.Item
-          title="Jobs"
+        systemIcon='featured'
           onPress={() => this.setState({selectedTab: "Jobs"})}
           selected={this.state['selectedTab'] == "Jobs"}>
           <NavigatorIOS
@@ -38,7 +38,7 @@ export default class MainApp extends React.Component {
           <SavedView />
         </TabBarIOS.Item>
         <TabBarIOS.Item
-          title="Settings" 
+          systemIcon='more'
           onPress={() => this.setState({selectedTab: "Settings"})}
           selected={this.state['selectedTab'] == "Settings"}>
           <Settings />
