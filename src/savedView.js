@@ -6,23 +6,6 @@ import HTMLView from 'react-native-htmlview';
 export default class SavedView extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      jobstories: []
-    }
-    this.componentDidMount = this.componentDidMount.bind(this);
-  }
-
-  componentDidMount = async () => {
-    var that = this;
-    try {
-      var jobthreads = await AsyncStorage.getItem('@savedJobs')
-      if (jobthreads !== null) {
-        var deserializedJobthreads = JSON.parse(jobthreads);
-        that.setState({allthreads: deserializedJobthreads})
-      }
-    } catch (e) {
-      console.log(e);
-    }
   }
 
   _keyExtractor = (item, index) => {
@@ -52,22 +35,10 @@ export default class SavedView extends React.Component {
     )
   }
 
-  _renderSeparator = () => {
-    return (
-      <View
-        style={{
-          height: 1,
-          backgroundColor: "#CED0CE",
-        }}
-      />
-    );
-  }
-
   render = () => {
     var savedList = (<FlatList style={styles.list}
-        data={this.state.jobstories}
+        data={this.props.savedJobs}
         keyExtractor={this._keyExtractor}
-        ItemSeparatorComponent={this._renderSeparator}
         renderItem={this._renderItem}/>)
     var empty = (
       <View style={styles.emptyTextContainer}>
@@ -78,7 +49,7 @@ export default class SavedView extends React.Component {
     )
     return (
       <View style={styles.mainContainer}>
-        { this.state.jobstories.length == 0 ? empty : savedList}
+        { this.props.savedJobs.length == 0 ? empty : savedList}
       </View>
     )
   }
@@ -86,10 +57,13 @@ export default class SavedView extends React.Component {
 
 const styles = StyleSheet.create({
   list: {
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
+    paddingLeft: 10,
+    paddingRight: 10,
+    marginBottom: 64
   },
   cellContainer: {
-    padding: 10
+    paddingTop: 10
   },
   cellStrip: {
     flexDirection: "row",
@@ -104,6 +78,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     flexDirection: 'column',
+    marginTop: 64
   },
   emptyTextContainer: {
     flex: 1,

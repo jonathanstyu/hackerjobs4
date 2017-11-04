@@ -37,7 +37,7 @@ export default class JobListView extends React.Component {
   }
 
   _keyExtractor = (item, index) => {
-    return index
+    return item.id
   }
 
   _onRefresh = async () => {
@@ -54,7 +54,7 @@ export default class JobListView extends React.Component {
 
   _onPressItem = (thread) => {
     this.props.navigator.push({
-      title: "Thread: " + thread.title,
+      title: thread.parsed_title,
       passProps: {thread: thread},
       component: ThreadView
     })

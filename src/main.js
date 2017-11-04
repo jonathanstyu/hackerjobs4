@@ -6,13 +6,28 @@ import JobHandler from './jobhandler';
 // Components
 import SavedView from './savedView';
 import JobListView from './jobListView';
-import Settings from './settings';
+import SettingsView from './settings';
 
 export default class MainApp extends React.Component {
   constructor(props) {
     super(props);
     this.state={
-      selectedTab: 'Jobs'
+      selectedTab: 'Jobs',
+      savedJobs: []
+    }
+    this.componentDidMount = this.componentDidMount.bind(this);
+  }
+
+  componentDidMount = async () => {
+    var that = this;
+    try {
+      var jobthreads = await AsyncStorage.getItem('@savedJobs')
+      if (jobthreads !== null) {
+        var deserializedJobthreads = JSON.parse(jobthreads);
+        that.setState({savedJobs: deserializedJobthreads})
+      }
+    } catch (e) {
+      console.log(e);
     }
   }
 
@@ -26,7 +41,7 @@ export default class MainApp extends React.Component {
           <NavigatorIOS
             initialRoute={{
               component: JobListView,
-              title: "HackerJobs2",
+              title: "Featured",
             }}
             style={{flex: 1}}
           />
@@ -35,13 +50,26 @@ export default class MainApp extends React.Component {
           systemIcon="bookmarks"
           onPress={() => this.setState({selectedTab: "Saved"})}
           selected={this.state['selectedTab'] == "Saved"}>
-          <SavedView />
+          <NavigatorIOS
+            initialRoute={{
+              component: SavedView,
+              title: "Bookmarked Jobs",
+              passProps: {savedJobs: this.state['savedJobs']}
+            }}
+            style={{flex: 1}}
+            />
         </TabBarIOS.Item>
         <TabBarIOS.Item
           systemIcon='more'
           onPress={() => this.setState({selectedTab: "Settings"})}
           selected={this.state['selectedTab'] == "Settings"}>
-          <Settings />
+          <NavigatorIOS
+            initialRoute={{
+              component: SettingsView,
+              title: "Settings"
+            }}
+            style={{flex: 1}}
+            />
         </TabBarIOS.Item>
       </TabBarIOS>
     );

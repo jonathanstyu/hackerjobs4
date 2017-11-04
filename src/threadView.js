@@ -9,7 +9,7 @@ export default class ThreadView extends React.Component {
     this.state = {
       refreshing: true,
       jobstories: [],
-      kidsIDs: props.thread.kids,
+      // kidsIDs: props.thread.kids,
       paging: 1
     }
     this.componentDidMount = this.componentDidMount.bind(this);
@@ -17,10 +17,11 @@ export default class ThreadView extends React.Component {
 
   componentDidMount = async () => {
     var that = this;
+    var kidsIDs = this.props.thread.kids; 
     try {
-      var endIndex = this.state['paging'] * 30 < this.state.kidsIDs.length ? this.state['paging'] * 30: this.state.kidsIDs.length;
+      var endIndex = this.state['paging'] * 30 < kidsIDs.length ? this.state['paging'] * 30: kidsIDs.length;
       var startIndex = (this.state['paging'] - 1) * 30;
-      var slicedIDs = this.state['kidsIDs'].slice(startIndex, endIndex);
+      var slicedIDs = kidsIDs.slice(startIndex, endIndex);
       var jobthreads = await JobHandler.batchGet(slicedIDs);
       that.setState({jobstories: jobthreads, refreshing: false})
     } catch (e) {
@@ -29,7 +30,7 @@ export default class ThreadView extends React.Component {
   }
 
   _keyExtractor = (item, index) => {
-    return index
+    return item.id
   }
 
   _onPressItem = (thread) => {
@@ -43,7 +44,7 @@ export default class ThreadView extends React.Component {
     JobHandler.saveJob(jobstory)
   }
 
-  _share = (jobstory) => {
+  _share = async (jobstory) => {
     // JobHandler.saveStory(jobstory)
   }
 
@@ -65,11 +66,24 @@ export default class ThreadView extends React.Component {
     )
   }
 
+  _endReached = async () => {
+    var that = this; 
+    var kidsIDs = this.props.thread.kids; 
+    var nextPage = this.state['paging'] + 1; 
+    var endIndex = nextPage * 30 < kidsIDs.length ? this.state['paging'] * 30: kidsIDs.length;
+    var startIndex = this.state['paging'] * 30;
+    var slicedIDs = kidsIDs.slice(startIndex, endIndex);
+    var newstories = this.state['jobstories'].concat(await JobHandler.batchGet(slicedIDs)); 
+    that.setState({jobstories: newstories, paging: nextPage})
+  }
+
   render = () => {
     var renderingScreen = (<View style={styles.spinnerContainer}><ActivityIndicator size={'large'} /></View>)
     var list = (<FlatList style={styles.list}
         data={this.state.jobstories}
         keyExtractor={this._keyExtractor}
+        onEndReachedThreshold={0.7}
+        onEndReached={this._endReached}
         renderItem={this._renderItem}/>)
     // Because of the return statement, the block {} is treated like an object literal
     return (
@@ -82,10 +96,12 @@ export default class ThreadView extends React.Component {
 
 const styles = StyleSheet.create({
   list: {
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
+    marginTop: 64,
+    marginBottom: 64
   },
   cellContainer: {
-    paddingTop: 10,
+    
   },
   cellStrip: {
     flexDirection: "row",
@@ -98,7 +114,6 @@ const styles = StyleSheet.create({
     paddingLeft: 5
   },
   mainContainer: {
-    marginTop: 64,
     flex: 1
   },
   spinnerContainer: {

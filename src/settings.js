@@ -1,7 +1,7 @@
 import React from 'react';
-import {Switch, StyleSheet, Image, Text, View, ActivityIndicator, AsyncStorage, SectionList} from 'react-native';
+import {Switch, StyleSheet, Image, Text, View, Settings, AsyncStorage, FlatList, Button, AlertIOS} from 'react-native';
 
-export default class Settings extends React.Component {
+export default class SettingsView extends React.Component {
   constructor(props) {
     super(props);
     this.componentDidMount = this.componentDidMount.bind(this);
@@ -28,7 +28,12 @@ export default class Settings extends React.Component {
       <View key={props}
         style={styles.cellContainer}
         >
-        <Text key={props}>{props}</Text>
+        <Text key={props} style={{
+          fontWeight: 'bold',
+          fontSize: 16
+        }}>
+          {props}
+        </Text>
         <Switch />
       </View>
     )
@@ -36,34 +41,43 @@ export default class Settings extends React.Component {
 
   render = () => {
     return (
-      <SectionList style={styles.list}
+      <View style={styles.settingsContainer}>
+        <FlatList style={styles.list}
         keyExtractor={this._keyExtractor}
-        renderSectionHeader={({section}) => this._renderHeader(section)}
         renderItem={({item}) => this._renderItem(item)}
-        sections={[
-          {data: ["darkMode"], title: "Visual"}
-        ]}
+        data={["Dark Mode", "Shuffle Thread Items"]}
         />
+        <Button 
+          color="red"
+          title="Delete Bookmarked Jobs" onPress={() => AsyncStorage.removeItem('@savedJobs', () => AlertIOS.alert("Bookmarked Jobs Deleted"))} />
+        <Button 
+          color="red"
+          title="Reset All Data" onPress={() => AsyncStorage.clear(() => AlertIOS.alert("All gone"))} />
+      </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
+  settingsContainer: {
+    flex: 1,
+    flexDirection: "column",
+    marginBottom: 64
+  },
   list: {
     backgroundColor: '#fff'
   },
   cellContainer: {
     padding: 10,
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
   mainContainer: {
     marginTop: 64,
     flex: 1
   },
-  spinnerContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: "center"
+  buttonStyle: {
+    color: 'red',
   }
 });

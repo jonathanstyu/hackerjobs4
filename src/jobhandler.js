@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import {AsyncStorage} from 'react-native'; 
+import {AsyncStorage, AlertIOS} from 'react-native'; 
 // import WhoThread from './whoThread';
 // This class is for retrieving jobs
 export default class JobHandler { }
@@ -49,7 +49,8 @@ JobHandler.saveJob = (job) => {
     if (jobthreads !== null) {
       var deserializedSavedThreads = JSON.parse(jobthreads);
       var savedThreadsStringified = JSON.stringify(deserializedSavedThreads.push(job));
-      resolve(await AsyncStorage.setItem("@savedJobs", savedThreadsStringified))
+      resolve(await AsyncStorage.setItem("@savedJobs", savedThreadsStringified));
+      AlertIOS.alert("Job Saved"); 
     } else {
       var toSave = JSON.stringify([job])
       resolve(await AsyncStorage.setItem("@savedJobs", toSave));
