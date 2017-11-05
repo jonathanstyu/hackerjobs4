@@ -1,7 +1,8 @@
 import React from 'react';
 import {Switch, StyleSheet, Image, Text, View, Settings, AsyncStorage, FlatList, Button, AlertIOS} from 'react-native';
+import {connect} from 'react-redux'; 
 
-export default class SettingsView extends React.Component {
+class SettingsView extends React.Component {
   constructor(props) {
     super(props);
     this.componentDidMount = this.componentDidMount.bind(this);
@@ -81,3 +82,22 @@ const styles = StyleSheet.create({
     color: 'red',
   }
 });
+
+mapStateToProps = (state) => {
+  return {
+    savedJobs: state.get('settings')
+  }
+}
+
+mapDispatchToProps = (dispatch) => {
+  return {
+    selectTab: (tab) => {
+      dispatch({
+        type: 'select_tab',
+        tab: tab
+      })
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SettingsView)

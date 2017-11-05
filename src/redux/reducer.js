@@ -6,7 +6,11 @@ var hackerApp = (state, action) => {
   if (typeof state == 'undefined') {
     return Map({
       selectedTab: "Jobs",
-      savedJobs: []
+      savedJobs: [],
+      settings: {
+        "Dark Mode": false,
+        "Shuffle Threads": false
+      }
     })
   }
 
