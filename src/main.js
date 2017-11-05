@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, NavigatorIOS, AsyncStorage, TabBarIOS } from 'react-native';
+import {connect} from 'react-redux'; 
 
 import JobHandler from './jobhandler';
 
@@ -8,27 +9,9 @@ import SavedView from './savedView';
 import JobListView from './jobListView';
 import SettingsView from './settings';
 
-export default class MainApp extends React.Component {
+class MainApp extends React.Component {
   constructor(props) {
     super(props);
-    this.state={
-      selectedTab: 'Jobs',
-      savedJobs: []
-    }
-    this.componentDidMount = this.componentDidMount.bind(this);
-  }
-
-  componentDidMount = async () => {
-    var that = this;
-    try {
-      var jobthreads = await AsyncStorage.getItem('@savedJobs')
-      if (jobthreads !== null) {
-        var deserializedJobthreads = JSON.parse(jobthreads);
-        that.setState({savedJobs: deserializedJobthreads})
-      }
-    } catch (e) {
-      console.log(e);
-    }
   }
 
   render() {
@@ -36,8 +19,8 @@ export default class MainApp extends React.Component {
       <TabBarIOS tintColor="blue">
         <TabBarIOS.Item
         systemIcon='featured'
-          onPress={() => this.setState({selectedTab: "Jobs"})}
-          selected={this.state['selectedTab'] == "Jobs"}>
+          onPress={() => this.props.selectTab("Jobs")}
+          selected={this.props['selectedTab'] == "Jobs"}>
           <NavigatorIOS
             initialRoute={{
               component: JobListView,
@@ -48,21 +31,20 @@ export default class MainApp extends React.Component {
         </TabBarIOS.Item>
         <TabBarIOS.Item
           systemIcon="bookmarks"
-          onPress={() => this.setState({selectedTab: "Saved"})}
-          selected={this.state['selectedTab'] == "Saved"}>
+          onPress={() => this.props.selectTab("Saved")}
+          selected={this.props['selectedTab'] == "Saved"}>
           <NavigatorIOS
             initialRoute={{
               component: SavedView,
-              title: "Bookmarked Jobs",
-              passProps: {savedJobs: this.state['savedJobs']}
+              title: "Bookmarked Jobs"
             }}
             style={{flex: 1}}
             />
         </TabBarIOS.Item>
         <TabBarIOS.Item
           systemIcon='more'
-          onPress={() => this.setState({selectedTab: "Settings"})}
-          selected={this.state['selectedTab'] == "Settings"}>
+          onPress={() => this.props.selectTab("Settings")}
+          selected={this.props['selectedTab'] == "Settings"}>
           <NavigatorIOS
             initialRoute={{
               component: SettingsView,
@@ -75,3 +57,22 @@ export default class MainApp extends React.Component {
     );
   }
 }
+
+mapStateToProps = (state) => {
+  return {
+    selectedTab: state.get('selectedTab')
+  }
+}
+
+mapDispatchToProps = (dispatch) => {
+  return {
+    selectTab: (tab) => {
+      dispatch({
+        type: 'select_tab',
+        tab: tab
+      })
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(MainApp)

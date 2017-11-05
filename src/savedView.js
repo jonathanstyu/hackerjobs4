@@ -3,7 +3,9 @@ import {FlatList, Button, StyleSheet, Image, Text, View, ActivityIndicator, Asyn
 import JobHandler from './jobhandler';
 import HTMLView from 'react-native-htmlview';
 
-export default class SavedView extends React.Component {
+import {connect} from 'react-redux'; 
+
+class SavedView extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -91,3 +93,22 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   }
 });
+
+mapStateToProps = (state) => {
+  return {
+    savedJobs: state.get('savedJobs')
+  }
+}
+
+mapDispatchToProps = (dispatch) => {
+  return {
+    selectTab: (tab) => {
+      dispatch({
+        type: 'select_tab',
+        tab: tab
+      })
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SavedView)

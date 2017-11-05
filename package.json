@@ -17,10 +17,13 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "immutable": "^3.8.2",
     "lodash": "^4.17.4",
     "moment": "^2.19.1",
     "react": "16.0.0-alpha.12",
     "react-native": "^0.48.4",
-    "react-native-htmlview": "^0.12.1"
+    "react-native-htmlview": "^0.12.1",
+    "react-redux": "^5.0.6",
+    "redux": "^3.7.2"
   }
 }
