@@ -40,10 +40,6 @@ export default class ThreadView extends React.Component {
     // })
   }
 
-  _save = (jobstory) => {
-    JobHandler.saveJob(jobstory)
-  }
-
   _share = async (jobstory) => {
     // JobHandler.saveStory(jobstory)
   }

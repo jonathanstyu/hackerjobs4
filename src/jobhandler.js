@@ -43,11 +43,18 @@ JobHandler.batchGet = (batchIDs=[]) => {
   })
 }
 
+JobHandler.getSavedJobs = () => {
+  return new Promise(async (resolve, reject) => {
+    resolve(await AsyncStorage.getItem('@savedJobs'))
+  }) 
+}
+
 JobHandler.saveJob = (job) => {
   return new Promise(async (resolve, reject) => {
-    var jobthreads = await AsyncStorage.getItem('@savedJobs')
+    var jobthreads = await JobHandler.getSavedJobs(); 
     if (jobthreads !== null) {
       var deserializedSavedThreads = JSON.parse(jobthreads);
+      console.log(deserializedSavedThreads)
       var savedThreadsStringified = JSON.stringify(deserializedSavedThreads.push(job));
       resolve(await AsyncStorage.setItem("@savedJobs", savedThreadsStringified));
       AlertIOS.alert("Job Saved"); 

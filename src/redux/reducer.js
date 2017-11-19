@@ -1,5 +1,4 @@
 import {Map} from 'immutable'; 
-import {createStore} from 'redux'; 
 import {AsyncStorage} from 'react-native'; 
 
 var hackerApp = (state, action) => {
@@ -8,16 +7,24 @@ var hackerApp = (state, action) => {
       selectedTab: "Jobs",
       savedJobs: [],
       settings: {
-        "Dark Mode": false,
-        "Shuffle Threads": false
+        "Dark Mode": true,
+        "Shuffle Job Threads When Opening": false
       }
     })
   }
 
   switch (action.type) {
+    case "load_jobs": 
+      return state.set('savedJobs', action.jobs)
+      break; 
+
     case "select_tab":
       return state.set('selectedTab', action.tab)
       break;
+
+    case "save_job":
+      JobHandler.saveJob(jobstory)
+      return state.set('savedJobs', )
   
     default:
       return state; 
@@ -25,4 +32,4 @@ var hackerApp = (state, action) => {
   }
 }
 
-export default createStore(hackerApp); 
+export default hackerApp; 

@@ -4,10 +4,12 @@ import JobHandler from './jobhandler';
 import HTMLView from 'react-native-htmlview';
 
 import {connect} from 'react-redux'; 
+import darkStyle from './darkstyle'; 
 
 class SavedView extends React.Component {
   constructor(props) {
     super(props);
+    var that = this; 
   }
 
   _keyExtractor = (item, index) => {
@@ -38,7 +40,8 @@ class SavedView extends React.Component {
   }
 
   render = () => {
-    var savedList = (<FlatList style={styles.list}
+    console.log(this.props.savedJobs)
+    var savedList = (<FlatList style={[styles.list]}
         data={this.props.savedJobs}
         keyExtractor={this._keyExtractor}
         renderItem={this._renderItem}/>)
@@ -59,7 +62,6 @@ class SavedView extends React.Component {
 
 const styles = StyleSheet.create({
   list: {
-    backgroundColor: '#fff',
     paddingLeft: 10,
     paddingRight: 10,
     marginBottom: 64
@@ -69,7 +71,6 @@ const styles = StyleSheet.create({
   },
   cellStrip: {
     flexDirection: "row",
-    backgroundColor: 'gainsboro',
     justifyContent: "space-between",
     alignItems: 'center',
     marginTop: 10,
@@ -102,12 +103,7 @@ mapStateToProps = (state) => {
 
 mapDispatchToProps = (dispatch) => {
   return {
-    selectTab: (tab) => {
-      dispatch({
-        type: 'select_tab',
-        tab: tab
-      })
-    }
+    
   }
 }
 

@@ -16,14 +16,6 @@ class SettingsView extends React.Component {
     return index
   }
 
-  _renderHeader = (section) => {
-    return (
-      <View key={section}>
-        <Text>{section.title}</Text>
-      </View>
-    )
-  }
-
   _renderItem = (props) => {
     return (
       <View key={props}
@@ -35,7 +27,8 @@ class SettingsView extends React.Component {
         }}>
           {props}
         </Text>
-        <Switch />
+        <Switch 
+          value={this.props.settings[props]} />
       </View>
     )
   }
@@ -46,7 +39,7 @@ class SettingsView extends React.Component {
         <FlatList style={styles.list}
         keyExtractor={this._keyExtractor}
         renderItem={({item}) => this._renderItem(item)}
-        data={["Dark Mode", "Shuffle Thread Items"]}
+        data={Object.keys(this.props.settings)}
         />
         <Button 
           color="red"
@@ -85,7 +78,7 @@ const styles = StyleSheet.create({
 
 mapStateToProps = (state) => {
   return {
-    savedJobs: state.get('settings')
+    settings: state.get('settings')
   }
 }
 

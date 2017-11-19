@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, NavigatorIOS, AsyncStorage, TabBarIOS } from 'react-native';
+import { StyleSheet, Text, View, NavigatorIOS, AsyncStorage, TabBarIOS, AppState } from 'react-native';
 import {connect} from 'react-redux'; 
 
 import JobHandler from './jobhandler';
@@ -14,9 +14,17 @@ class MainApp extends React.Component {
     super(props);
   }
 
+  componentDidMount = async() => {
+    
+  }
+
+  componentWillUnmount = async () => {
+    console.log("We are gonna sleep!") 
+  }
+
   render() {
     return (
-      <TabBarIOS tintColor="blue">
+      <TabBarIOS tintColor="blue" barStyle="white">
         <TabBarIOS.Item
         systemIcon='featured'
           onPress={() => this.props.selectTab("Jobs")}

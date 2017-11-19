@@ -117,7 +117,7 @@ export default class JobListView extends React.Component {
 
 const styles = StyleSheet.create({
   list: {
-    backgroundColor: '#fff'
+    backgroundColor: 'white'
   },
   cellContainer: {
     padding: 10
