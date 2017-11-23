@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, NavigatorIOS, AsyncStorage, TabBarIOS, AppState } from 'react-native';
-import {connect} from 'react-redux'; 
+import {connect} from 'react-redux';
 
 import JobHandler from './jobhandler';
 
@@ -15,11 +15,11 @@ class MainApp extends React.Component {
   }
 
   componentDidMount = async() => {
-    
+
   }
 
   componentWillUnmount = async () => {
-    console.log("We are gonna sleep!") 
+    console.log("We are gonna sleep!")
   }
 
   render() {

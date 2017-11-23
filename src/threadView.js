@@ -2,8 +2,9 @@ import React from 'react';
 import {FlatList, StyleSheet, Button, Image, Text, View, ActivityIndicator, AsyncStorage, NavigatorIOS} from 'react-native';
 import JobHandler from './jobhandler';
 import HTMLView from 'react-native-htmlview';
+import {connect} from 'react-redux';
 
-export default class ThreadView extends React.Component {
+class ThreadView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -17,7 +18,7 @@ export default class ThreadView extends React.Component {
 
   componentDidMount = async () => {
     var that = this;
-    var kidsIDs = this.props.thread.kids; 
+    var kidsIDs = this.props.thread.kids;
     try {
       var endIndex = this.state['paging'] * 30 < kidsIDs.length ? this.state['paging'] * 30: kidsIDs.length;
       var startIndex = (this.state['paging'] - 1) * 30;
@@ -55,7 +56,7 @@ export default class ThreadView extends React.Component {
         }} value={jobstory.text}/>
         <View style={styles.cellStrip}>
           <Text>Job Stories {props['index']}</Text>
-          <Button title="Save" onPress={() => this._save(jobstory)} />
+          <Button title="Save" onPress={() => this.props.saveJob(jobstory)} />
           <Button title="Share" onPress={() => this._share(jobstory)} />
         </View>
       </View>
@@ -63,13 +64,13 @@ export default class ThreadView extends React.Component {
   }
 
   _endReached = async () => {
-    var that = this; 
-    var kidsIDs = this.props.thread.kids; 
-    var nextPage = this.state['paging'] + 1; 
+    var that = this;
+    var kidsIDs = this.props.thread.kids;
+    var nextPage = this.state['paging'] + 1;
     var endIndex = nextPage * 30 < kidsIDs.length ? this.state['paging'] * 30: kidsIDs.length;
     var startIndex = this.state['paging'] * 30;
     var slicedIDs = kidsIDs.slice(startIndex, endIndex);
-    var newstories = this.state['jobstories'].concat(await JobHandler.batchGet(slicedIDs)); 
+    var newstories = this.state['jobstories'].concat(await JobHandler.batchGet(slicedIDs));
     that.setState({jobstories: newstories, paging: nextPage})
   }
 
@@ -97,7 +98,7 @@ const styles = StyleSheet.create({
     marginBottom: 64
   },
   cellContainer: {
-    
+
   },
   cellStrip: {
     flexDirection: "row",
@@ -118,3 +119,22 @@ const styles = StyleSheet.create({
     alignItems: "center"
   }
 });
+
+mapStateToProps = (state) => {
+  return {
+
+  }
+}
+
+mapDispatchToProps = (dispatch) => {
+  return {
+    saveJob: (job) => {
+      dispatch({
+        type: 'save_job',
+        job: job
+      })
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ThreadView)

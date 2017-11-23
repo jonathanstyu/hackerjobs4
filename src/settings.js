@@ -1,6 +1,6 @@
 import React from 'react';
 import {Switch, StyleSheet, Image, Text, View, Settings, AsyncStorage, FlatList, Button, AlertIOS} from 'react-native';
-import {connect} from 'react-redux'; 
+import {connect} from 'react-redux';
 
 class SettingsView extends React.Component {
   constructor(props) {
@@ -27,7 +27,8 @@ class SettingsView extends React.Component {
         }}>
           {props}
         </Text>
-        <Switch 
+        <Switch
+          onValueChange={() => this.props.flipSetting(props)}
           value={this.props.settings[props]} />
       </View>
     )
@@ -41,10 +42,10 @@ class SettingsView extends React.Component {
         renderItem={({item}) => this._renderItem(item)}
         data={Object.keys(this.props.settings)}
         />
-        <Button 
+        <Button
           color="red"
           title="Delete Bookmarked Jobs" onPress={() => AsyncStorage.removeItem('@savedJobs', () => AlertIOS.alert("Bookmarked Jobs Deleted"))} />
-        <Button 
+        <Button
           color="red"
           title="Reset All Data" onPress={() => AsyncStorage.clear(() => AlertIOS.alert("All gone"))} />
       </View>
@@ -84,10 +85,10 @@ mapStateToProps = (state) => {
 
 mapDispatchToProps = (dispatch) => {
   return {
-    selectTab: (tab) => {
+    flipSetting: (settingKey) => {
       dispatch({
-        type: 'select_tab',
-        tab: tab
+        type: 'flip_setting',
+        settingKey: settingKey
       })
     }
   }

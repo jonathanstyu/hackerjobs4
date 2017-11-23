@@ -3,13 +3,13 @@ import {FlatList, Button, StyleSheet, Image, Text, View, ActivityIndicator, Asyn
 import JobHandler from './jobhandler';
 import HTMLView from 'react-native-htmlview';
 
-import {connect} from 'react-redux'; 
-import darkStyle from './darkstyle'; 
+import {connect} from 'react-redux';
+import darkStyle from './darkstyle';
 
 class SavedView extends React.Component {
   constructor(props) {
     super(props);
-    var that = this; 
+    var that = this;
   }
 
   _keyExtractor = (item, index) => {
@@ -97,13 +97,13 @@ const styles = StyleSheet.create({
 
 mapStateToProps = (state) => {
   return {
-    savedJobs: state.get('savedJobs')
+    savedJobs: state.get('savedJobs').toArray()
   }
 }
 
 mapDispatchToProps = (dispatch) => {
   return {
-    
+
   }
 }
 
