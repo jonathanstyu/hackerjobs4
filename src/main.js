@@ -39,6 +39,7 @@ class MainApp extends React.Component {
         </TabBarIOS.Item>
         <TabBarIOS.Item
           systemIcon="bookmarks"
+          badge={this.props.savedJobsCount == 0 ? null : this.props.savedJobsCount}
           onPress={() => this.props.selectTab("Saved")}
           selected={this.props['selectedTab'] == "Saved"}>
           <NavigatorIOS
@@ -68,7 +69,8 @@ class MainApp extends React.Component {
 
 mapStateToProps = (state) => {
   return {
-    selectedTab: state.get('selectedTab')
+    selectedTab: state.get('selectedTab'),
+    savedJobsCount: state.get('savedJobs').length
   }
 }
 

@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
 
 mapStateToProps = (state) => {
   return {
-    savedJobs: state.get('savedJobs').toArray()
+    savedJobs: state.get('savedJobs')
   }
 }
 

@@ -1,15 +1,12 @@
 import {AsyncStorage, AlertIOS} from 'react-native';
 
-export const loadState = () => {
-  console.log("hello");
-  AsyncStorage.getItem('@persistedstate')
-    .then((state) => {
-      console.log(state);
-      if (state === null) {
-        return undefined;
-      }
-      return JSON.parse(state);
-    })
+export const loadState = async () => {
+  var state = await AsyncStorage.getItem('@persistedstate');
+  if (state === null) {
+    return undefined;
+  } else {
+    return JSON.parse(state)
+  }
 }
 
 export const saveState = async (state) => {

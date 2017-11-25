@@ -44,7 +44,8 @@ class SettingsView extends React.Component {
         />
         <Button
           color="red"
-          title="Delete Bookmarked Jobs" onPress={() => AsyncStorage.removeItem('@savedJobs', () => AlertIOS.alert("Bookmarked Jobs Deleted"))} />
+          title="Delete Bookmarked Jobs"
+          onPress={this.props.emptyJobs}/>
         <Button
           color="red"
           title="Reset All Data" onPress={() => AsyncStorage.clear(() => AlertIOS.alert("All gone"))} />
@@ -89,6 +90,11 @@ mapDispatchToProps = (dispatch) => {
       dispatch({
         type: 'flip_setting',
         settingKey: settingKey
+      })
+    },
+    emptyJobs: () => {
+      dispatch({
+        type: "empty_jobs"
       })
     }
   }

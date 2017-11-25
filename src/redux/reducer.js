@@ -3,10 +3,10 @@ import {AsyncStorage} from 'react-native';
 
 const initialState = {
   selectedTab: "Jobs",
-  savedJobs: Set([]),
+  savedJobs: [],
   settings: {
-    "Dark Mode": true,
-    "Shuffle Job Threads When Opening": false
+    "Dark Mode": false,
+    "Shuffle Job Threads When Opening": true
   }
 }
 
@@ -21,17 +21,21 @@ const hackerApp = (state, action) => {
       break;
 
     case "save_job":
-      var updatedSavedJobs = state.get('savedJobs')
+      var updatedSavedJobs = Set(state.get('savedJobs'))
       var newJobs = updatedSavedJobs.add(action.job)
-      return state.set('savedJobs', newJobs)
+      return state.set('savedJobs', newJobs.toArray())
 
     case "flip_setting":
       var currentSetting = state.get('settings')
-      currentSetting[action.settingKey] = !currentSetting[action.settingKey]
-      return state.set('settings', currentSetting)
+      var newSettings = Object.assign({}, currentSetting)
+      newSettings[action.settingKey] = !currentSetting[action.settingKey]
+      return state.set('settings', newSettings)
+
+    case 'empty_jobs':
+      return state.set('savedJobs', [])
 
     default:
-      return state;
+      return Map.isMap(state) ? state : Map(state);
       break;
   }
 }
