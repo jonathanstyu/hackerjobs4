@@ -3,6 +3,10 @@ import {SectionList, FlatList, StyleSheet, Image,
   Text, View, RefreshControl,
   AsyncStorage, TouchableHighlight,
   ActivityIndicator } from 'react-native';
+import {connect} from 'react-redux';
+
+import {generalstyle, darkstyle} from './darkstyle';
+
 import JobHandler from './jobhandler';
 import ThreadView from './threadView';
 import SavedView from './savedView';
@@ -12,7 +16,7 @@ import _ from 'lodash';
 // For accessing data
 // import WhoThread from './whoThread';
 
-export default class JobListView extends React.Component {
+class JobListView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -68,8 +72,13 @@ export default class JobListView extends React.Component {
         style={styles.cellContainer}
         >
         <View style={cellStyle.secondary}>
-          <Text style={cellStyle.title}>{Moment.unix(job.time).format('MM/YYYY')}</Text>
-          <Text>{job.kids.length} posts</Text>
+          <Text style={[
+            cellStyle.bodyText,
+            this.props.darkMode ? darkstyle.cellCopyDark : null
+          ]}>{Moment.unix(job.time).format('MM/YYYY')}</Text>
+          <Text style={[
+            this.props.darkMode ? darkstyle.cellCopyDark : null
+          ]}>{job.kids.length} posts</Text>
         </View>
       </TouchableHighlight>
     )
@@ -77,7 +86,9 @@ export default class JobListView extends React.Component {
 
   _renderSectionHeader = (section) => {
     return (
-      <Text style={cellStyle.titleCell}>{section.title}</Text>
+      <Text style={[styles.titleCell,
+        this.props.darkMode ? darkstyle.cellCopyDark : null
+        ]}>{section.title}</Text>
     )
   }
 
@@ -96,7 +107,7 @@ export default class JobListView extends React.Component {
     var endIndex = this.state['shownthreads'];
     var organized = _.groupBy(this.state.allthreads, 'parsed_title');
     return (
-      <SectionList style={styles.list}
+      <SectionList style={(this.props.darkMode ? darkstyle.listDark : null)}
         sections={[
           {data: organized["Who is hiring?"] || [], title: "Who is hiring?"},
           {data: organized["Who wants to be hired?"] || [], title: "Who wants to be hired"},
@@ -116,8 +127,10 @@ export default class JobListView extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  list: {
-    backgroundColor: 'white'
+  titleCell: {
+    fontWeight: "bold",
+    fontSize: 17,
+    'padding': 10
   },
   cellContainer: {
     padding: 10
@@ -134,18 +147,29 @@ const styles = StyleSheet.create({
 });
 
 const cellStyle = StyleSheet.create({
-  titleCell: {
-    fontWeight: "bold",
-    fontSize: 18,
-    'padding': 10
-  },
   secondary: {
     flexDirection: "row",
     justifyContent: 'space-between',
     paddingLeft: 10,
     paddingRight: 10
   },
-  count: {
-
+  bodyText: {
+    fontWeight: '300',
+    fontSize: 15
   }
 })
+
+
+mapStateToProps = (state) => {
+  return {
+    darkMode: state.get('settings')['Dark Mode']
+  }
+}
+
+mapDispatchToProps = (dispatch) => {
+  return {
+
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(JobListView)

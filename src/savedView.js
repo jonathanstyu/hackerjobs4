@@ -2,6 +2,7 @@ import React from 'react';
 import {FlatList, Button, StyleSheet, Image, Text, View, ActivityIndicator, AsyncStorage, NavigatorIOS} from 'react-native';
 import JobHandler from './jobhandler';
 import HTMLView from 'react-native-htmlview';
+import {generalstyle, darkstyle, htmlDarkStyle, htmlNormalStyle} from './darkstyle';
 
 import {connect} from 'react-redux';
 import darkStyle from './darkstyle';
@@ -29,7 +30,9 @@ class SavedView extends React.Component {
       <View key={jobstory}
       style={styles.cellContainer}
       >
-      <HTMLView value={jobstory.text}/>
+      {
+        this.props.darkMode ? <HTMLView value={jobstory.text} stylesheet={htmlDarkStyle} /> : <HTMLView value={jobstory.text} stylesheet={htmlNormalStyle} />
+      }
       <View style={styles.cellStrip}>
         <Text>Job Stories {props['index']}</Text>
         <Button title="Delete" color='red' onPress={() => this._delete(jobstory)} />
@@ -41,7 +44,7 @@ class SavedView extends React.Component {
 
   render = () => {
     console.log(this.props.savedJobs)
-    var savedList = (<FlatList style={[styles.list]}
+    var savedList = (<FlatList style={[styles.list, (this.props.darkMode ? darkstyle.listDark : null )]}
         data={this.props.savedJobs}
         keyExtractor={this._keyExtractor}
         renderItem={this._renderItem}/>)
@@ -81,7 +84,6 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     flexDirection: 'column',
-    marginTop: 64
   },
   emptyTextContainer: {
     flex: 1,
@@ -97,7 +99,8 @@ const styles = StyleSheet.create({
 
 mapStateToProps = (state) => {
   return {
-    savedJobs: state.get('savedJobs')
+    savedJobs: state.get('savedJobs'),
+    darkMode: state.get('settings')['Dark Mode']
   }
 }
 

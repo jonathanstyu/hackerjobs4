@@ -1,6 +1,8 @@
 import React from 'react';
-import {Switch, StyleSheet, Image, Text, View, Settings, AsyncStorage, FlatList, Button, AlertIOS} from 'react-native';
+import {Switch, StyleSheet, Image, Text, View, Settings, AsyncStorage, FlatList, TouchableHighlight, AlertIOS} from 'react-native';
 import {connect} from 'react-redux';
+
+import {generalstyle, darkstyle} from './darkstyle';
 
 class SettingsView extends React.Component {
   constructor(props) {
@@ -21,10 +23,9 @@ class SettingsView extends React.Component {
       <View key={props}
         style={styles.cellContainer}
         >
-        <Text key={props} style={{
-          fontWeight: 'bold',
-          fontSize: 16
-        }}>
+        <Text key={props} style={[styles.label,
+          this.props.darkMode ? darkstyle.cellCopyDark : null
+          ]}>
           {props}
         </Text>
         <Switch
@@ -36,32 +37,35 @@ class SettingsView extends React.Component {
 
   render = () => {
     return (
-      <View style={styles.settingsContainer}>
-        <FlatList style={styles.list}
+      <View style={[styles.settingsContainer]}>
+        <FlatList style={[
+          (this.props.darkMode ? darkstyle.listDark : null)
+          ]}
         keyExtractor={this._keyExtractor}
         renderItem={({item}) => this._renderItem(item)}
         data={Object.keys(this.props.settings)}
         />
-        <Button
-          color="red"
-          title="Delete Bookmarked Jobs"
-          onPress={this.props.emptyJobs}/>
-        <Button
-          color="red"
-          title="Reset All Data" onPress={() => AsyncStorage.clear(() => AlertIOS.alert("All gone"))} />
+        <TouchableHighlight
+          underlayColor={this.props.darkMode ? "white" : "blue"}
+          onPress={this.props.emptyJobs}>
+            <View style={styles.buttonContainer}>
+              <Text style={styles.buttonStyle}>Delete Bookmarked Jobs</Text>
+            </View>
+          </TouchableHighlight>
       </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
+  label: {
+    fontWeight: "bold",
+    fontSize: 16,
+  },
   settingsContainer: {
     flex: 1,
     flexDirection: "column",
     marginBottom: 64
-  },
-  list: {
-    backgroundColor: '#fff'
   },
   cellContainer: {
     padding: 10,
@@ -73,14 +77,24 @@ const styles = StyleSheet.create({
     marginTop: 64,
     flex: 1
   },
+  buttonContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    padding: 20,
+    borderWidth: 2
+  },
   buttonStyle: {
     color: 'red',
+    fontWeight: "bold",
+    fontSize: 16,
   }
 });
 
 mapStateToProps = (state) => {
   return {
-    settings: state.get('settings')
+    settings: state.get('settings'),
+    darkMode: state.get('settings')['Dark Mode']
   }
 }
 

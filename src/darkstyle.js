@@ -1,7 +1,11 @@
 import React from 'react';
-import {StyleSheet} from "react-native"; 
+import {StyleSheet} from "react-native";
 
-export default darkStyle = StyleSheet.create({
+export const generalstyle = StyleSheet.create({
+  
+})
+
+export const darkstyle = StyleSheet.create({
    listDark: {
       backgroundColor: 'black'
    },
@@ -11,4 +15,16 @@ export default darkStyle = StyleSheet.create({
    cellCopyDark: {
       color: 'white'
    }
+})
+
+export const htmlDarkStyle = StyleSheet.create({
+  p: {
+    color: 'white'
+  }
+})
+
+export const htmlNormalStyle = StyleSheet.create({
+  p: {
+    color: 'black'
+  }
 })

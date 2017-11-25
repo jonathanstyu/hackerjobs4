@@ -5,7 +5,7 @@ const initialState = {
   selectedTab: "Jobs",
   savedJobs: [],
   settings: {
-    "Dark Mode": false,
+    "Dark Mode": true,
     "Shuffle Job Threads When Opening": true
   }
 }

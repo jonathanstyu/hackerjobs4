@@ -27,8 +27,14 @@ export default class App extends React.Component {
       store.subscribe(() => {
         saveState(store.getState())
       });
+
+      that.unsubscribe = store.subscribe(()=> {return null});
       that.setState({store: store, loading: false})
     })
+  }
+
+  componentWillUnmount = () => {
+    this.unsubscribe()
   }
 
   render = () => {

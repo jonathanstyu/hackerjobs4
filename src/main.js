@@ -14,14 +14,6 @@ class MainApp extends React.Component {
     super(props);
   }
 
-  componentDidMount = async() => {
-
-  }
-
-  componentWillUnmount = async () => {
-    console.log("We are gonna sleep!")
-  }
-
   render() {
     return (
       <TabBarIOS tintColor="blue" barStyle="white">
