@@ -2,15 +2,16 @@ import React from 'react';
 import {StyleSheet} from "react-native";
 
 export const generalstyle = StyleSheet.create({
-  
+
 })
 
 export const darkstyle = StyleSheet.create({
    listDark: {
       backgroundColor: 'black'
    },
-   cellStripDark: {
-      backgroundColor: 'black'
+   buttonDark: {
+     backgroundColor: "black",
+     borderColor: 'white'
    },
    cellCopyDark: {
       color: 'white'

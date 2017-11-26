@@ -7,11 +7,6 @@ import {generalstyle, darkstyle} from './darkstyle';
 class SettingsView extends React.Component {
   constructor(props) {
     super(props);
-    this.componentDidMount = this.componentDidMount.bind(this);
-  }
-
-  componentDidMount = async () => {
-
   }
 
   _keyExtractor = (item, index) => {
@@ -37,7 +32,8 @@ class SettingsView extends React.Component {
 
   render = () => {
     return (
-      <View style={[styles.settingsContainer]}>
+      <View style={[styles.settingsContainer,
+        (this.props.darkMode ? darkstyle.listDark : null)]}>
         <FlatList style={[
           (this.props.darkMode ? darkstyle.listDark : null)
           ]}
@@ -46,12 +42,12 @@ class SettingsView extends React.Component {
         data={Object.keys(this.props.settings)}
         />
         <TouchableHighlight
-          underlayColor={this.props.darkMode ? "white" : "blue"}
+          underlayColor={this.props.darkMode ? "white" : "red"}
+          style={[styles.buttonContainer,
+          (this.props.darkMode ? darkstyle.buttonDark : null)]}
           onPress={this.props.emptyJobs}>
-            <View style={styles.buttonContainer}>
-              <Text style={styles.buttonStyle}>Delete Bookmarked Jobs</Text>
-            </View>
-          </TouchableHighlight>
+            <Text style={styles.buttonStyle}>Delete Jobs</Text>
+        </TouchableHighlight>
       </View>
     )
   }
@@ -63,9 +59,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   settingsContainer: {
-    flex: 1,
+    flex: 3,
     flexDirection: "column",
-    marginBottom: 64
+    paddingBottom: 65,
   },
   cellContainer: {
     padding: 10,
@@ -78,16 +74,17 @@ const styles = StyleSheet.create({
     flex: 1
   },
   buttonContainer: {
-    flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
-    padding: 20,
-    borderWidth: 2
+    padding: 15,
+    margin: 10,
+    borderWidth: 1,
+    borderRadius: 10
   },
   buttonStyle: {
     color: 'red',
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 20,
   }
 });
 

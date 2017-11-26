@@ -5,7 +5,6 @@ import HTMLView from 'react-native-htmlview';
 import {generalstyle, darkstyle, htmlDarkStyle, htmlNormalStyle} from './darkstyle';
 
 import {connect} from 'react-redux';
-import darkStyle from './darkstyle';
 
 class SavedView extends React.Component {
   constructor(props) {
@@ -43,14 +42,16 @@ class SavedView extends React.Component {
   }
 
   render = () => {
-    console.log(this.props.savedJobs)
     var savedList = (<FlatList style={[styles.list, (this.props.darkMode ? darkstyle.listDark : null )]}
         data={this.props.savedJobs}
         keyExtractor={this._keyExtractor}
         renderItem={this._renderItem}/>)
     var empty = (
-      <View style={styles.emptyTextContainer}>
-        <Text style={styles.emptyText}>
+      <View style={[styles.emptyTextContainer,
+      (this.props.darkMode ? darkstyle.listDark : null)]}>
+        <Text style={[styles.emptyText,
+          (this.props.darkMode ? darkstyle.cellCopyDark : null)
+          ]}>
           You do not have any stories saved.
         </Text>
       </View>
@@ -67,19 +68,21 @@ const styles = StyleSheet.create({
   list: {
     paddingLeft: 10,
     paddingRight: 10,
-    marginBottom: 64
+    marginBottom: 35
   },
   cellContainer: {
     paddingTop: 10
   },
   cellStrip: {
     flexDirection: "row",
+    backgroundColor: 'gainsboro',
     justifyContent: "space-between",
     alignItems: 'center',
     marginTop: 10,
     marginBottom: 10,
     paddingRight: 5,
-    paddingLeft: 5
+    paddingLeft: 5,
+    borderWidth: 1
   },
   mainContainer: {
     flex: 1,

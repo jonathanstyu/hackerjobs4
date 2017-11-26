@@ -3,6 +3,9 @@ import {FlatList, StyleSheet, Button, Image, Text, View, ActivityIndicator, Asyn
 import JobHandler from './jobhandler';
 import HTMLView from 'react-native-htmlview';
 import {connect} from 'react-redux';
+import _ from 'lodash';
+
+import {generalstyle, darkstyle, htmlDarkStyle, htmlNormalStyle} from './darkstyle';
 
 class ThreadView extends React.Component {
   constructor(props) {
@@ -10,7 +13,6 @@ class ThreadView extends React.Component {
     this.state = {
       refreshing: true,
       jobstories: [],
-      // kidsIDs: props.thread.kids,
       paging: 1
     }
     this.componentDidMount = this.componentDidMount.bind(this);
@@ -18,7 +20,7 @@ class ThreadView extends React.Component {
 
   componentDidMount = async () => {
     var that = this;
-    var kidsIDs = this.props.thread.kids;
+    var kidsIDs = this.props.shuffleMode ? _.shuffle(this.props.thread.kids) : this.props.thread.kids;
     try {
       var endIndex = this.state['paging'] * 30 < kidsIDs.length ? this.state['paging'] * 30: kidsIDs.length;
       var startIndex = (this.state['paging'] - 1) * 30;
@@ -51,9 +53,9 @@ class ThreadView extends React.Component {
       <View key={jobstory}
         style={styles.cellContainer}
         >
-        <HTMLView style={{
-          padding: 10
-        }} value={jobstory.text}/>
+        {
+          this.props.darkMode ? <HTMLView value={jobstory.text} stylesheet={htmlDarkStyle} /> : <HTMLView value={jobstory.text} stylesheet={htmlNormalStyle} />
+        }
         <View style={styles.cellStrip}>
           <Text>Job Stories {props['index']}</Text>
           <Button title="Save" onPress={() => this.props.saveJob(jobstory)} />
@@ -122,7 +124,8 @@ const styles = StyleSheet.create({
 
 mapStateToProps = (state) => {
   return {
-
+    darkMode: state.get('settings')["Dark Mode"],
+    shuffleMode: state.get('settings')["Shuffle Job Threads When Opening"]
   }
 }
 
