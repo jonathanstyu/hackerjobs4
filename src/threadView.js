@@ -43,15 +43,12 @@ class ThreadView extends React.Component {
     // })
   }
 
-  _share = async (jobstory) => {
-    // JobHandler.saveStory(jobstory)
-  }
-
   _renderItem = (props) => {
     var jobstory = props['item'];
     return (
       <View key={jobstory}
-        style={styles.cellContainer}
+        style={[styles.cellContainer
+        ]}
         >
         {
           this.props.darkMode ? <HTMLView value={jobstory.text} stylesheet={htmlDarkStyle} /> : <HTMLView value={jobstory.text} stylesheet={htmlNormalStyle} />
@@ -59,7 +56,7 @@ class ThreadView extends React.Component {
         <View style={styles.cellStrip}>
           <Text>Job Stories {props['index']}</Text>
           <Button title="Save" onPress={() => this.props.saveJob(jobstory)} />
-          <Button title="Share" onPress={() => this._share(jobstory)} />
+          <Button title="Share" onPress={() => this.props.shareJob(jobstory)} />
         </View>
       </View>
     )
@@ -86,7 +83,9 @@ class ThreadView extends React.Component {
         renderItem={this._renderItem}/>)
     // Because of the return statement, the block {} is treated like an object literal
     return (
-      <View style={styles.mainContainer}>
+      <View style={[styles.mainContainer,
+        (this.props.darkMode ? darkstyle.listDark: null)
+      ]}>
         { this.state['refreshing'] ? renderingScreen : list }
       </View>
     )
@@ -95,12 +94,11 @@ class ThreadView extends React.Component {
 
 const styles = StyleSheet.create({
   list: {
-    backgroundColor: '#fff',
     marginTop: 64,
     marginBottom: 64
   },
   cellContainer: {
-
+    backgroundColor: 'transparent'
   },
   cellStrip: {
     flexDirection: "row",
@@ -136,7 +134,13 @@ mapDispatchToProps = (dispatch) => {
         type: 'save_job',
         job: job
       })
-    }
+    },
+    shareJob: (job) => {
+      dispatch({
+        type: 'share_job',
+        job: job
+      })
+    },
   }
 }
 

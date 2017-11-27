@@ -34,8 +34,8 @@ class SavedView extends React.Component {
       }
       <View style={styles.cellStrip}>
         <Text>Job Stories {props['index']}</Text>
-        <Button title="Delete" color='red' onPress={() => this._delete(jobstory)} />
-        <Button title="Share" onPress={() => this._share(jobstory)} />
+        <Button title="Delete" color='red' onPress={() => this.props.deleteJob(jobstory)} />
+        <Button title="Share" onPress={() => this.props.shareJob(jobstory)} />
       </View>
     </View>
     )
@@ -109,7 +109,18 @@ mapStateToProps = (state) => {
 
 mapDispatchToProps = (dispatch) => {
   return {
-
+    deleteJob: (job) => {
+      dispatch({
+        type: 'delete_job',
+        job: job
+      })
+    },
+    shareJob: (job) => {
+      dispatch({
+        type: 'share_job',
+        job: job
+      })
+    },
   }
 }
 

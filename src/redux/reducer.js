@@ -1,5 +1,6 @@
 import {Map, Set} from 'immutable';
-import {AsyncStorage} from 'react-native';
+import {AsyncStorage, ActionSheetIOS, AlertIOS} from 'react-native';
+import _ from 'lodash'
 
 const initialState = {
   selectedTab: "Jobs",
@@ -33,6 +34,18 @@ const hackerApp = (state, action) => {
 
     case 'empty_jobs':
       return state.set('savedJobs', [])
+
+    case 'share_job':
+      ActionSheetIOS.showShareActionSheetWithOptions({
+        message: 'Check out this job from HakkerJobs: https://hacker-news.firebaseio.com/v0/item/'+action.job.id
+      }, () => {}, () => {
+        // AlertIOS.alert("Share Complete! Thanks!")
+      })
+      return state;
+
+    case 'delete_job':
+      var newJobs = _.reject(state.get('savedJobs'), {'id': action.job.id})
+      return state.set('savedJobs', newJobs)
 
     default:
       return Map.isMap(state) ? state : Map(state);
